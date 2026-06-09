@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+
 from src.store import Category, Product
 
 
@@ -23,9 +24,7 @@ def load_data_from_json(file_path: str | Path) -> list[Category]:
             products_list.append(product)
 
         category = Category(
-            name=category_data["name"],
-            description=category_data["description"],
-            products=products_list
+            name=category_data["name"], description=category_data["description"], products=products_list
         )
         categories.append(category)
 

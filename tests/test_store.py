@@ -1,7 +1,7 @@
 from src.store import Category, Product
 
 
-def test_product_init():
+def test_product_init() -> None:
     """Тест корректности инициализации объекта класса Product."""
     product = Product("Samsung Galaxy", "Смартфон", 50000.0, 5)
     assert product.name == "Samsung Galaxy"
@@ -10,14 +10,14 @@ def test_product_init():
     assert product.quantity == 5
 
 
-def test_category_init(sample_category, sample_products):
+def test_category_init(sample_category: Category, sample_products: list[Product]) -> None:
     """Тест корректности инициализации объекта класса Category."""
     assert sample_category.name == "Электроника"
     assert sample_category.description == "Гаджеты"
     assert sample_category.products == sample_products
 
 
-def test_category_and_product_count(sample_products):
+def test_category_and_product_count(sample_products: list[Product]) -> None:
     """Тест подсчета количества категорий и уникальных продуктов."""
     assert Category.category_count == 0
     assert Category.product_count == 0
