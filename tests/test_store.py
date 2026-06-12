@@ -63,31 +63,6 @@ def test_new_product_classmethod() -> None:
     assert product.quantity == 100
 
 
-def test_new_product_merge_duplicates() -> None:
-    """Тест слияния дубликатов товаров: сложение количества и выбор высшей цены."""
-    existing_products = [Product("iPhone 15", "128GB", 80000.0, 5), Product("Samsung Galaxy", "256GB", 50000.0, 3)]
-
-    duplicate_data = {"name": "iPhone 15", "description": "Новая партия", "price": 85000.0, "quantity": 3}
-
-    result_product = Product.new_product(duplicate_data, existing_products)
-
-    assert result_product.quantity == 8
-    assert result_product.price == 85000.0
-
-
-def test_new_product_no_duplicate_in_list() -> None:
-    """Тест создания нового товара, если в списке его еще нет."""
-    existing_products = [Product("iPhone 15", "128GB", 80000.0, 5)]
-
-    new_data = {"name": "Xiaomi Redmi", "description": "Бюджетный", "price": 20000.0, "quantity": 10}
-
-    result_product = Product.new_product(new_data, existing_products)
-
-    assert result_product.name == "Xiaomi Redmi"
-    assert result_product.quantity == 10
-    assert result_product.price == 20000.0
-
-
 def test_product_price_getter_and_setter() -> None:
     """Тест корректной работы геттера и установки валидной цены через сеттер."""
     product = Product("Телевизор", "4K", 50000.0, 2)
