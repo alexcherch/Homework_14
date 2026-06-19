@@ -1,6 +1,6 @@
 import pytest
 
-from src.store import Category, Product
+from src.store import Category, Product, ProductIterator
 
 
 def test_product_init() -> None:
@@ -44,10 +44,7 @@ def test_category_and_product_count(sample_products: list[Product]) -> None:
 
 def test_category_products_getter(sample_category: Category) -> None:
     """Тест корректной работы геттера products."""
-    expected_output = (
-        "Samsung Galaxy, 50000.0 руб. Остаток: 5 шт.\n"
-        "iPhone 15, 80000.0 руб. Остаток: 3 шт.\n"
-    )
+    expected_output = "Samsung Galaxy, 50000.0 руб. Остаток: 5 шт.\n" "iPhone 15, 80000.0 руб. Остаток: 3 шт.\n"
     assert sample_category.products == expected_output
 
 
@@ -103,3 +100,36 @@ def test_product_price_setter_decrease_reject(monkeypatch: pytest.MonkeyPatch) -
 
     product.price = 45000.0
     assert product.price == 50000.0
+
+
+def test_product_str() -> None:
+    """Тест корректности строкового отображения объекта класса Product."""
+    product = Product("Samsung Galaxy", "Смартфон", 50000.0, 5)
+    assert str(product) == "Samsung Galaxy, 50000.0 руб. Остаток: 5 шт."
+
+
+def test_category_str(sample_category: Category) -> None:
+    """Тест корректности строкового отображения объекта класса Category."""
+    assert str(sample_category) == "Электроника, количество продуктов: 8 шт."
+
+
+def test_product_add(sample_products: list[Product]) -> None:
+    """Тест сложения двух продуктов (подсчет суммарной стоимости запасов)."""
+    # prod1: "Samsung Galaxy", цена 50000.0, количество 5 -> 250000.0
+    # prod2: "iPhone 15", цена 80000.0, количество 3 -> 240000.0
+    prod1, prod2 = sample_products
+
+    assert prod1 + prod2 == 490000.0
+
+
+def test_product_iterator(sample_category: Category) -> None:
+    """Тест корректной работы вспомогательного класса ProductIterator."""
+    iterator = ProductIterator(sample_category)
+
+    products_from_iterator = []
+    for product in iterator:
+        products_from_iterator.append(product)
+
+    assert len(products_from_iterator) == 2
+    assert products_from_iterator[0].name == "Samsung Galaxy"
+    assert products_from_iterator[1].name == "iPhone 15"
