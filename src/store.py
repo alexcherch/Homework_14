@@ -14,9 +14,10 @@ class Product:
         return f"{self.name}, {self.price} руб. Остаток: {self.quantity} шт."
 
     def __add__(self, other: Product) -> float:
-        """Реализация сложения двух продуктов.
-        Возвращает полную стоимость товаров обоих видов на складе.
-        """
+        """Реализация сложения двух продуктов строго одного типа."""
+        if type(self) is not type(other):
+            raise TypeError("Нельзя складывать товары разных классов")
+
         return (self.price * self.quantity) + (other.price * other.quantity)
 
     @property
@@ -53,6 +54,46 @@ class Product:
         )
 
 
+class Smartphone(Product):
+    """Класс-наследник класса Product для смартфонов."""
+
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        price: float,
+        quantity: int,
+        efficiency: float,
+        model: str,
+        memory: int,
+        color: str,
+    ) -> None:
+        super().__init__(name, description, price, quantity)
+        self.efficiency = efficiency
+        self.model = model
+        self.memory = memory
+        self.color = color
+
+
+class LawnGrass(Product):
+    """Класс-наследник класса Product для газонной травы."""
+
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        price: float,
+        quantity: int,
+        country: str,
+        germination_period: str,
+        color: str,
+    ) -> None:
+        super().__init__(name, description, price, quantity)
+        self.country = country
+        self.germination_period = germination_period
+        self.color = color
+
+
 class Category:
     category_count = 0
     product_count = 0
@@ -75,8 +116,10 @@ class Category:
 
     def add_product(self, product: Product) -> None:
         """Специальный метод для добавления нового товара в приватный список."""
-        self.__products.append(product)
+        if not isinstance(product, Product):
+            raise TypeError("Можно добавлять только продукты или их наследников")
 
+        self.__products.append(product)
         Category.product_count += 1
 
     @property

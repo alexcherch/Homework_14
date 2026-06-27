@@ -1,6 +1,6 @@
 import pytest
 
-from src.store import Category, Product, ProductIterator
+from src.store import Category, LawnGrass, Product, ProductIterator, Smartphone
 
 
 def test_product_init() -> None:
@@ -133,3 +133,51 @@ def test_product_iterator(sample_category: Category) -> None:
     assert len(products_from_iterator) == 2
     assert products_from_iterator[0].name == "Samsung Galaxy"
     assert products_from_iterator[1].name == "iPhone 15"
+
+
+def test_smartphone_creation() -> None:
+    """Тест создания объекта Смартфон и проверки его атрибутов."""
+    phone = Smartphone("Iphone 15", "512GB, Gray space", 210000.0, 8, 98.2, "15", 512, "Gray space")
+    assert phone.name == "Iphone 15"
+    assert phone.price == 210000.0
+    assert phone.quantity == 8
+    assert phone.efficiency == 98.2
+    assert phone.model == "15"
+    assert phone.memory == 512
+    assert phone.color == "Gray space"
+
+
+def test_lawngrass_creation() -> None:
+    """Тест создания объекта Трава газонная и проверки ее атрибутов."""
+    grass = LawnGrass("Газонная трава", "Элитная трава для газона", 500.0, 20, "Россия", "7 дней", "Зеленый")
+    assert grass.name == "Газонная трава"
+    assert grass.price == 500.0
+    assert grass.quantity == 20
+    assert grass.country == "Россия"
+    assert grass.germination_period == "7 дней"
+    assert grass.color == "Зеленый"
+
+
+def test_add_products_same_class() -> None:
+    """Тест успешного сложения продуктов ОДНОГО класса."""
+    phone1 = Smartphone("iPhone 15", "Premium", 100000.0, 2, 3.5, "15 Pro", 256, "Titanium")
+    phone2 = Smartphone("Samsung S24", "Flagship", 90000.0, 3, 3.4, "Ultra", 512, "Black")
+    # (100000 * 2) + (90000 * 3) = 200000 + 270000 = 470000
+    assert phone1 + phone2 == 470000.0
+
+
+def test_add_products_different_classes_raises_error() -> None:
+    """Тест: сложение РАЗНЫХ классов продуктов вызывает ошибку TypeError."""
+    phone = Smartphone("iPhone 15", "Premium", 100000.0, 2, 3.5, "15 Pro", 256, "Titanium")
+    grass = LawnGrass("Газонная трава", "Элитная", 500.0, 20, "Россия", "7 дней", "Зеленый")
+
+    with pytest.raises(TypeError):
+        _ = phone + grass
+
+
+def test_category_add_invalid_object_raises_error() -> None:
+    """Тест: попытка добавить не продукт в категорию вызывает ошибку TypeError."""
+    category = Category("Смартфоны", "Высокотехнологичные", [])
+
+    with pytest.raises(TypeError):
+        category.add_product("Not a product") # type: ignore[arg-type]
