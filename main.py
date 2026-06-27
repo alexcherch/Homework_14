@@ -1,4 +1,4 @@
-from store import Category, LawnGrass, Smartphone
+from src.store import Category, LawnGrass, Smartphone
 
 if __name__ == "__main__":
     smartphone1 = Smartphone(
