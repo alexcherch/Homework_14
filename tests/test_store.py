@@ -198,3 +198,24 @@ def test_base_product_cannot_be_instantiated() -> None:
     """Тест: нельзя создать объект абстрактного класса BaseProduct напрямую."""
     with pytest.raises(TypeError):
         _ = BaseProduct("Абстрактный", "Тест", 10.0, 1)  # type: ignore[abstract]
+
+
+def test_product_init_zero_quantity_raises_value_error() -> None:
+    """Тест: создание продукта с нулевым количеством вызывает ValueError."""
+    with pytest.raises(ValueError, match="Товар с нулевым количеством не может быть добавлен"):
+        Product("Бракованный товар", "Описание", 1000.0, 0)
+
+
+def test_category_middle_price() -> None:
+    """Тест успешного подсчета средней цены в категории."""
+    p1 = Product("Товар 1", "Описание", 100.0, 5)
+    p2 = Product("Товар 2", "Описание", 200.0, 5)
+    category = Category("Еда", "Продукты", [p1, p2])
+
+    assert category.middle_price() == 150.0
+
+
+def test_category_middle_price_empty_returns_zero() -> None:
+    """Тест: метод middle_price возвращает 0 для пустой категории."""
+    category = Category("Пустая", "Нет товаров", [])
+    assert category.middle_price() == 0.0
