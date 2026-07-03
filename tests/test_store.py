@@ -1,6 +1,6 @@
 import pytest
 
-from src.store import Category, LawnGrass, Product, ProductIterator, Smartphone
+from src.store import BaseProduct, Category, LawnGrass, Product, ProductIterator, Smartphone
 
 
 def test_product_init() -> None:
@@ -73,6 +73,8 @@ def test_product_price_getter_and_setter() -> None:
 def test_product_price_setter_invalid(capsys: pytest.CaptureFixture[str]) -> None:
     """Тест запрета установки нулевой или отрицательной цены."""
     product = Product("Телевизор", "4K", 50000.0, 2)
+
+    capsys.readouterr()
 
     product.price = -100.0
 
@@ -180,4 +182,19 @@ def test_category_add_invalid_object_raises_error() -> None:
     category = Category("Смартфоны", "Высокотехнологичные", [])
 
     with pytest.raises(TypeError):
-        category.add_product("Not a product") # type: ignore[arg-type]
+        category.add_product("Not a product")  # type: ignore[arg-type]
+
+
+def test_product_creation_logs_to_console(capsys: pytest.CaptureFixture[str]) -> None:
+    """Тест: при создании продукта миксин печатает лог в консоль."""
+    _ = Product("Тестовый товар", "Описание", 100.0, 5)
+
+    captured = capsys.readouterr()
+
+    assert "Product('Тестовый товар', 'Описание', 100.0, 5)" in captured.out
+
+
+def test_base_product_cannot_be_instantiated() -> None:
+    """Тест: нельзя создать объект абстрактного класса BaseProduct напрямую."""
+    with pytest.raises(TypeError):
+        _ = BaseProduct("Абстрактный", "Тест", 10.0, 1)  # type: ignore[abstract]

@@ -1,13 +1,46 @@
 from __future__ import annotations
 
+from abc import ABC, abstractmethod
 
-class Product:
 
+class BaseProduct(ABC):
+    """Абстрактный базовый класс для всех типов продуктов."""
+
+    @abstractmethod
     def __init__(self, name: str, description: str, price: float, quantity: int) -> None:
+        """Абстрактный конструктор, задающий обязательные атрибуты продукта."""
         self.name = name
         self.description = description
-        self.__price = price
+        self.price = price
         self.quantity = quantity
+        super().__init__()
+
+    @abstractmethod
+    def __str__(self) -> str:
+        """Абстрактный метод для строкового отображения продукта."""
+        pass
+
+
+class PrintMixin:
+    """Класс-миксин для автоматического логирования создания объектов."""
+
+    def __init__(self) -> None:
+        """Конструктор миксина, который выводит лог и передает управление дальше."""
+        print(repr(self))
+        super().__init__()
+
+    def __repr__(self) -> str:
+        """Возвращает строковое представление объекта в виде ИмяКласса(атрибуты)."""
+        price = getattr(self, f"_{self.__class__.__name__}__price", getattr(self, "_Product__price", 0))
+        return f"{self.__class__.__name__}('{self.name}', '{self.description}', {price}, {self.quantity})"
+
+
+class Product(BaseProduct, PrintMixin):
+    """Класс, представляющий базовый продукт."""
+
+    def __init__(self, name: str, description: str, price: float, quantity: int) -> None:
+        self.__price = price
+        super().__init__(name=name, description=description, price=price, quantity=quantity)
 
     def __str__(self) -> str:
         """Строковое отображение продукта."""
