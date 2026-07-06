@@ -39,6 +39,9 @@ class Product(BaseProduct, PrintMixin):
     """Класс, представляющий базовый продукт."""
 
     def __init__(self, name: str, description: str, price: float, quantity: int) -> None:
+        if quantity <= 0:
+            raise ValueError("Товар с нулевым количеством не может быть добавлен")
+
         self.__price = price
         super().__init__(name=name, description=description, price=price, quantity=quantity)
 
@@ -167,6 +170,18 @@ class Category:
         for product in self.__products:
             result_string += f"{product}\n"
         return result_string
+
+    def middle_price(self) -> float:
+        """Подсчитывает средний ценник всех товаров в категории.
+
+        В случае пустой категории возвращает 0.
+        """
+        total_price = sum(product.price for product in self.products_list)
+
+        try:
+            return total_price / len(self.products_list)
+        except ZeroDivisionError:
+            return 0.0
 
 
 class ProductIterator:
